@@ -4,10 +4,12 @@ const PORT = 3000;
 const mongoose = require("mongoose");
 const Listing = require("./models/listing");
 const path = require("path");
+const methodOverride = require("method-override");
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({extended: true}));
+app.use(methodOverride("_method"));
 
 main().
     then(() => {
@@ -44,6 +46,18 @@ app.post("/listings", async (req, res) => {
     let newListing = new Listing(req.body.listing);
     await newListing.save();
     res.redirect("/listings");
+});
+
+app.get("/listings/:id/edit", async (req, res) => {
+    let {id} = req.params;
+    const listing = await Listing.findById(id);
+    res.render("listings/edit.ejs", { listing });
+});
+
+app.put("/listings/:id", async (req, res) => {
+    let {id} = req.params;
+    await Listing.findByIdAndUpdate(id, {...req.body.listing});
+    res.redirect(`/listings/${id}`);
 });
 
 // app.get("/testListing", async (req, res) => {
