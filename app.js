@@ -5,11 +5,14 @@ const mongoose = require("mongoose");
 const Listing = require("./models/listing");
 const path = require("path");
 const methodOverride = require("method-override");
+const ejsMate = require("ejs-mate");
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
+app.engine("ejs", ejsMate);
+app.use(express.static(path.join(__dirname, "/public")));
 
 main().
     then(() => {
@@ -66,20 +69,6 @@ app.delete("/listings/:id", async (req, res) => {
     console.log(deletedListing);
     res.redirect("/listings");
 });
-
-// app.get("/testListing", async (req, res) => {
-//     let sampleListing = new Listing({
-//         title: "My new vila",
-//         description: "Buy the beach",
-//         price: 20000,
-//         location: "goa",
-//         country: "India"
-//     });
-
-//     await sampleListing.save();
-//     console.log("Sample was saved");
-//     res.send("Successfull testing")
-// });
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
