@@ -36,8 +36,8 @@ app.get("/", (req, res) => {
 });
 
 const validateListing = (req, res, next) => {
-    let {error} = listingSchema.validate(req.body);
-    if(error) {
+    let { error } = listingSchema.validate(req.body);
+    if (error) {
         let erMsg = error.details.map((el) => el.message).join(",");
         throw new ExpressError(400, erMsg);
     } else {
@@ -46,8 +46,8 @@ const validateListing = (req, res, next) => {
 }
 
 const validateReview = (req, res, next) => {
-    let {error} = reviewSchema.validate(req.body);
-    if(error) {
+    let { error } = reviewSchema.validate(req.body);
+    if (error) {
         let erMsg = error.details.map((el) => el.message).join(",");
         throw new ExpressError(400, erMsg);
     } else {
@@ -70,8 +70,8 @@ app.get("/listings/:id", wrapAsync(async (req, res) => {
     res.render("listings/show.ejs", { listing });
 }));
 
-app.post("/listings",validateListing, wrapAsync(async (req, res, next) => {
-    
+app.post("/listings", validateListing, wrapAsync(async (req, res, next) => {
+
     const newListing = new Listing(req.body.listing);
     await newListing.save();
     res.redirect("/listings");
@@ -83,7 +83,7 @@ app.get("/listings/:id/edit", wrapAsync(async (req, res) => {
     res.render("listings/edit.ejs", { listing });
 }));
 
-app.put("/listings/:id",validateListing, wrapAsync(async (req, res) => {
+app.put("/listings/:id", validateListing, wrapAsync(async (req, res) => {
     let { id } = req.params;
     await Listing.findByIdAndUpdate(id, { ...req.body.listing });
     res.redirect(`/listings/${id}`);
@@ -108,10 +108,18 @@ app.post("/listings/:id/reviews", validateReview, wrapAsync(async (req, res) => 
     res.redirect(`/listings/${listing._id}`);
 }));
 
+app.delete("/listings/:id/reviews/:reviewId", wrapAsync(async (req, res) => {
+    let { id, reviewId } = req.params;
+    await Listing.findByIdAndUpdate(id, {$pull :{reviews: reviewId}});
+    await Review.findByIdAndDelete(reviewId);
+
+    res.redirect(`/listings/${id}`);
+}));
+
 
 app.use((err, req, res, next) => {
-    let {statusCode = 505, message = "Something went wroung"} = err ;
-    res.status(statusCode).render("error.ejs", {message});
+    let { statusCode = 505, message = "Something went wroung" } = err;
+    res.status(statusCode).render("error.ejs", { message });
     // res.status(statusCode).send(message);
 });
 
