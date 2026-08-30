@@ -4,7 +4,7 @@
   <div class="col-8 offset-3">
     <h3><%= listing.title %></h3>
   </div>
-  <div class="card col-6 offset-3 show-card" >
+  <div class="card col-6 offset-3 show-card">
     <img
       src="<%=listing.image%>"
       class="card-img-top show-img"
@@ -21,7 +21,11 @@
   </div>
   <br />
   <div class="btns">
-    <a href="/listings/<%=listing._id%>/edit" class="btn btn-dark col-1 offset-3 edit-btn">Edit</a>
+    <a
+      href="/listings/<%=listing._id%>/edit"
+      class="btn btn-dark col-1 offset-3 edit-btn"
+      >Edit</a
+    >
 
     <form method="post" action="/listings/<%=listing._id%>?_method=DELETE">
       <button class="btn btn-dark offset-6">Delete</button>
@@ -29,16 +33,30 @@
   </div>
 
   <div class="col-8 offset-3 mb-3">
-    <hr>
+    <hr />
     <h4>Leave a review</h4>
-    <form action="/listings/<%=listing._id%>/reviews" method="post">
+    <form action="/listings/<%=listing._id%>/reviews" method="post" novalidate class="needs-validation">
       <div class="mb-3 mt-3">
         <label for="rating" class="form-label">Rating</label>
-        <input type="range" class="form-range" min="1" max="5" id="rating" name="review[rating]">
+        <input
+          type="range"
+          class="form-range"
+          min="1"
+          max="5"
+          id="rating"
+          name="review[rating]"
+        />
       </div>
       <div class="mb-3 mt-3">
-        <label for="comment" class="form-label">Comment</label>
-        <textarea name="review[comment]" class="form-control" id="comment" cols="30" rows="5">Comment</textarea>
+        <label for="comment" class="form-label">Comments</label>
+        <textarea
+          name="review[comment]"
+          class="form-control"
+          id="comment"
+          cols="30"
+          rows="5"
+          required
+        ></textarea>
       </div>
       <button class="btn btn-outline-dark">Submit</button>
     </form>
