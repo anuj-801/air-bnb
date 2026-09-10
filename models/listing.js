@@ -10,8 +10,8 @@ const listingSchema = new mongoose.Schema({
         type: String,
     },
     image: {
-        type: String,
-        set: (v) => v === "" ? "https://c.pxhere.com/photos/b6/f0/beach_birds_dawn_dusk_hd_wallpaper_nature_ocean_outdoors-1174709.jpg!d" : v,
+        url: String,
+        filename: String,
     },
     price: {
         type: Number,
