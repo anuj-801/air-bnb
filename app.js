@@ -6,7 +6,7 @@ const express = require("express");
 const app = express();
 const PORT = 3000;
 const mongoose = require("mongoose");
-const path = require("path"); 
+const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError.js");
@@ -47,6 +47,8 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+const dbUrl = process.env.ATLASDB_URL;
+
 main()
   .then(() => {
     console.log("Successfull connection...");
@@ -56,7 +58,7 @@ main()
   });
 
 async function main() {
-  await mongoose.connect("mongodb://127.0.0.1:27017/wanderlust");
+  await mongoose.connect(dbUrl);
 }
 
 app.use((req, res, next) => {
@@ -66,28 +68,13 @@ app.use((req, res, next) => {
   next();
 });
 
-// app.get("/demouser", async(req, res) => {
-//     let fakeUser = new User({
-//         email: "anuj@gmail.com",
-//         username: "anuj-kumar",
-//     });
-
-//     let registeredUser = await User.register(fakeUser, "helloworld");
-//     res.send(registeredUser);
-// });
-
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
 app.use("/", userRouter);
 
-// app.all("*", (req, res, next) => {
-//     next(new ExpressError(404, "PAGE NOT FOUND"));
-// });
-
 app.use((err, req, res, next) => {
   let { statusCode = 505, message = "Something went wroung" } = err;
   res.status(statusCode).render("error.ejs", { message });
-  // res.status(statusCode).send(message);
 });
 
 app.listen(PORT, () => {
